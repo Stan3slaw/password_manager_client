@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import React from 'react';
 
+import { AuthProvider } from '@/cdk/providers/auth.provider';
 import ReactQueryProvider from '@/cdk/providers/react-query.provider';
 import { Toaster } from '@/components/ui/toaster';
 
@@ -22,8 +23,10 @@ const RootLayout: React.FC<
     <html lang='en'>
       <ReactQueryProvider>
         <body className={inter.className}>
-          {children}
-          <Toaster />
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
         </body>
       </ReactQueryProvider>
     </html>

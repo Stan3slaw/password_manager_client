@@ -27,12 +27,12 @@ export const decryptVault = ({ vaultKey, vault }: VaultWithVaultKey): string | n
   const decrypted = bytes.toString(enc.Utf8);
 
   try {
-    return JSON.parse(decrypted).vault;
+    return JSON.parse(decrypted);
   } catch (e) {
     return null;
   }
 };
 
 export const encryptVault = ({ vaultKey, vault }: VaultWithVaultKey): string => {
-  return AES.encrypt(vault, vaultKey).toString();
+  return AES.encrypt(JSON.stringify(vault), vaultKey).toString();
 };

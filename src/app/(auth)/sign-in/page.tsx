@@ -39,9 +39,9 @@ const SignInPage: NextPage = () => {
         salt,
       });
 
-      window.sessionStorage.setItem('vk', vaultKey);
+      window.sessionStorage.setItem('vault-key', vaultKey);
       const decryptedVault = decryptVault({ vault, vaultKey });
-      window.sessionStorage.setItem('vault', JSON.stringify(decryptedVault));
+      window.sessionStorage.setItem('vault', decryptedVault || '');
 
       router.push('/');
     },

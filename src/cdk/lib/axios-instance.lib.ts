@@ -21,7 +21,7 @@ axiosInstance.interceptors.request.use(
 
       if (token) {
         // eslint-disable-next-line no-param-reassign
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = token;
       }
     }
 

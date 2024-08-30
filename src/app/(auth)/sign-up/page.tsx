@@ -40,7 +40,7 @@ const SignUpPage: NextPage = () => {
         salt,
       });
 
-      window.sessionStorage.setItem('vk', vaultKey);
+      window.sessionStorage.setItem('vault-key', vaultKey);
       window.sessionStorage.setItem('vault', '');
 
       router.push('/');
