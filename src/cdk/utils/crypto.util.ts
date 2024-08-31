@@ -19,6 +19,7 @@ export const hashPassword = (password: string): string => {
 export const generateVaultKey = ({ email, hashedPassword, salt }: MetaDataForVaultKey): string => {
   return pbkdf2(`${email}:${hashedPassword}`, salt, {
     keySize: 32,
+    iterations: 10000,
   }).toString();
 };
 
