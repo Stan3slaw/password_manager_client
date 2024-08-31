@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
 import { signIn } from '@/api';
+import AuthFormWrapper from '@/app/(auth)/components/auth-form-wrapper/auth-form-wrapper';
 import SignInForm from '@/app/(auth)/sign-in/components/sign-in-form/sign-in-form';
 import { signInSchema } from '@/app/(auth)/sign-in/components/sign-in-form/sign-in-validation-schema';
 import { SignInFormData } from '@/app/(auth)/sign-in/types/sign-in-form-data.type';
@@ -28,7 +29,9 @@ const SignInPage: NextPage = () => {
     mode: 'onTouched',
   });
 
-  const { mutate } = useMutation(signIn, {
+  const { isSubmitting: isFormSubmitting, isDirty } = form.formState;
+
+  const { mutate, isLoading: isMutationSubmitting } = useMutation(signIn, {
     onSuccess: ({ salt, vault }) => {
       const email = form.getValues('email');
       const hashedPassword = form.getValues('hashedPassword');
@@ -68,9 +71,18 @@ const SignInPage: NextPage = () => {
   }
 
   return (
-    <>
-      <SignInForm form={form} onSubmit={handleSubmit} />
-    </>
+    <AuthFormWrapper
+      linkText='Sign Up'
+      linkHref='/sign-up'
+      formHeadingText='Login in your account'
+      formAdditionalText='Enter your credentials below to login'>
+      <SignInForm
+        form={form}
+        isSubmitting={isFormSubmitting || isMutationSubmitting}
+        isDirty={isDirty}
+        onSubmit={form.handleSubmit(handleSubmit)}
+      />
+    </AuthFormWrapper>
   );
 };
 

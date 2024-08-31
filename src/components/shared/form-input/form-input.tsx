@@ -1,4 +1,4 @@
-import React, { HTMLInputTypeAttribute } from 'react';
+import React, { HTMLInputAutoCompleteAttribute, HTMLInputTypeAttribute } from 'react';
 import { FieldValues, UseFormReturn, Path } from 'react-hook-form';
 
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -11,6 +11,9 @@ interface FormInputProps<T extends FieldValues> {
   name: Path<T>;
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
+  autoCapitalize?: string;
+  autoComplete?: HTMLInputAutoCompleteAttribute;
+  autoCorrect?: string;
 }
 
 const FormInput = <T extends FieldValues>({
@@ -20,6 +23,9 @@ const FormInput = <T extends FieldValues>({
   type,
   disabled,
   placeholder,
+  autoCapitalize,
+  autoComplete,
+  autoCorrect,
 }: FormInputProps<T>): React.JSX.Element => {
   return (
     <FormField
@@ -30,7 +36,15 @@ const FormInput = <T extends FieldValues>({
           {label && <FormLabel>{label}</FormLabel>}
 
           <FormControl>
-            <Input {...field} type={type} placeholder={placeholder} disabled={disabled} />
+            <Input
+              {...field}
+              type={type}
+              placeholder={placeholder}
+              disabled={disabled}
+              autoCapitalize={autoCapitalize}
+              autoComplete={autoComplete}
+              autoCorrect={autoCorrect}
+            />
           </FormControl>
 
           <FormMessage />

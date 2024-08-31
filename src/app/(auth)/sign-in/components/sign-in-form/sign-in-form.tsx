@@ -1,54 +1,62 @@
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 import { SignInFormData } from '@/app/(auth)/sign-in/types/sign-in-form-data.type';
+import { cn } from '@/cdk/lib/tailwind.lib';
 import FormInput from '@/components/shared/form-input/form-input';
-import FormWrapper from '@/components/shared/form-wrapper/form-wrapper';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
+import { Icons } from '@/components/ui/icons';
 
-interface SignInFormProps<T extends FieldValues> {
+interface SignInFormProps<T extends FieldValues> extends React.HTMLAttributes<HTMLDivElement> {
   form: UseFormReturn<T>;
+  isSubmitting: boolean;
+  isDirty: boolean;
   onSubmit: () => void;
 }
 
-const SignInForm: React.FC<SignInFormProps<SignInFormData>> = ({ form, onSubmit }) => {
-  const router = useRouter();
-
-  const { isSubmitting, isDirty } = form.formState;
-
-  function redirectToSignUp(): void {
-    router.push('/sign-up');
-  }
-
+const SignInForm: React.FC<SignInFormProps<SignInFormData>> = ({
+  form,
+  isSubmitting,
+  isDirty,
+  onSubmit,
+  className,
+  ...props
+}) => {
   return (
-    <>
-      <FormWrapper formHeader='Login'>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-            <FormInput<SignInFormData> form={form} label='Email' name='email' disabled={form.formState.isSubmitting} />
+    <div className={cn('grid gap-6', className)} {...props}>
+      <Form {...form}>
+        <form onSubmit={onSubmit}>
+          <div className='grid gap-4'>
+            <div className='grid gap-2'>
+              <FormInput<SignInFormData>
+                form={form}
+                name='email'
+                label='Email'
+                placeholder='name@example.com'
+                autoCapitalize='none'
+                autoComplete='email'
+                autoCorrect='off'
+                disabled={isSubmitting}
+              />
 
-            <FormInput<SignInFormData>
-              form={form}
-              label='Password'
-              name='password'
-              type='password'
-              disabled={form.formState.isSubmitting}
-            />
-
-            <div className='flex flex-col p-4 gap-4'>
-              <Button variant='default' type='submit' disabled={!isDirty || isSubmitting}>
-                Submit
-              </Button>
-              <Button variant='secondary' type='button' onClick={redirectToSignUp}>
-                Sign Up
-              </Button>
+              <FormInput<SignInFormData>
+                form={form}
+                name='password'
+                label='Password'
+                type='password'
+                placeholder='&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;'
+                disabled={isSubmitting}
+              />
             </div>
-          </form>
-        </Form>
-      </FormWrapper>
-    </>
+            <Button disabled={!isDirty || isSubmitting}>
+              {isSubmitting && <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />}
+              Login with Email
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 };
 
