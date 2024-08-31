@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { createContext, useEffect, useState } from 'react';
 
 import { checkAuth } from '@/api';
-import { VaultItem } from '@/app/page';
+import { VaultItem } from '@/cdk/types/vault.type';
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -27,8 +27,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [vaultKey, setVaultKey] = useState<string>('');
   const [isAuthChecking, setIsAuthChecking] = useState(true);
 
-  console.log({ isAuthChecking });
-
   const isProtectedRoute = protectedRoutes.includes(pathname);
   const isPublicRoute = publicRoutes.includes(pathname);
 
@@ -37,8 +35,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         const { isAuth } = await checkAuth();
         setIsAuthenticated(isAuth);
-
-        console.log({ isAuth });
 
         if (isAuth) {
           const storedVault = window.sessionStorage.getItem('vault');
