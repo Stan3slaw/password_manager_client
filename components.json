@@ -12,6 +12,9 @@
   },
   "aliases": {
     "components": "@/components",
-    "utils": "@/lib/utils"
+    "utils": "@/cdk/utils/cn.util",
+    "ui": "@/components/ui",
+    "lib": "@/cdk/lib",
+    "hooks": "@/cdk/hooks"
   }
 }

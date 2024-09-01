@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 
-import { cn } from '@/cdk/lib/tailwind.lib';
+import { cn } from '@/cdk/utils/cn.util';
 import { buttonVariants } from '@/components/ui/button';
 import Logo from '@/components/ui/logo';
 

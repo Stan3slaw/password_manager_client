@@ -2,7 +2,7 @@ import React from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 import { SignInFormData } from '@/app/(auth)/sign-in/types/sign-in-form-data.type';
-import { cn } from '@/cdk/lib/tailwind.lib';
+import { cn } from '@/cdk/utils/cn.util';
 import FormInput from '@/components/shared/form-input/form-input';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
