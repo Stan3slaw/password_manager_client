@@ -1,38 +1,15 @@
-'use client';
-
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { cookies } from 'next/headers';
 
-import { saveVault } from '@/api';
-import VaultForm from '@/app/components/vault-form/vault-form';
-import { useAuth } from '@/cdk/hooks/use-auth';
-import { VaultFormData } from '@/cdk/types/vault.type';
-import { encryptVault } from '@/cdk/utils/crypto.util';
+import VaultDashboard from '@/app/components/vault-dashboard/vault-dashboard';
 
 const Home: NextPage = () => {
-  const { vault, vaultKey } = useAuth();
-  const mutation = useMutation(saveVault);
+  const layout = cookies().get('react-resizable-panels:layout:mail');
+  const collapsed = cookies().get('react-resizable-panels:collapsed');
 
-  const form = useForm<VaultFormData>({
-    values: { vault },
-  });
-
-  function handleSubmit(): void {
-    const vault = form.getValues('vault');
-
-    const encryptedVault = encryptVault({
-      vault: JSON.stringify(vault),
-      vaultKey,
-    });
-
-    window.sessionStorage.setItem('vault', JSON.stringify(vault));
-
-    mutation.mutate({
-      encryptedVault,
-    });
-  }
+  const defaultLayout = layout ? JSON.parse(layout.value) : undefined;
+  const defaultCollapsed = collapsed ? JSON.parse(collapsed.value) : undefined;
 
   return (
     <div>
@@ -43,7 +20,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
-        <VaultForm form={form} onSubmit={handleSubmit} />
+        <VaultDashboard defaultLayout={defaultLayout} defaultCollapsed={defaultCollapsed} navCollapsedSize={4} />
       </main>
     </div>
   );

@@ -14,6 +14,7 @@ interface FormInputProps<T extends FieldValues> {
   autoCapitalize?: string;
   autoComplete?: HTMLInputAutoCompleteAttribute;
   autoCorrect?: string;
+  readOnly?: boolean;
 }
 
 const FormInput = <T extends FieldValues>({
@@ -26,6 +27,7 @@ const FormInput = <T extends FieldValues>({
   autoCapitalize,
   autoComplete,
   autoCorrect,
+  readOnly,
 }: FormInputProps<T>): React.JSX.Element => {
   return (
     <FormField
@@ -44,6 +46,7 @@ const FormInput = <T extends FieldValues>({
               autoCapitalize={autoCapitalize}
               autoComplete={autoComplete}
               autoCorrect={autoCorrect}
+              readOnly={readOnly}
             />
           </FormControl>
 

@@ -1,16 +1,17 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 
 import { checkAuth } from '@/api';
-import { VaultItem } from '@/cdk/types/vault.type';
+import { Vault } from '@/cdk/types/vault.type';
 
-type AuthContextType = {
+export type AuthContextType = {
   isAuthenticated: boolean;
-  vault: VaultItem[];
+  vault: Vault;
   vaultKey: string;
   isAuthChecking: boolean;
+  refresh: () => Promise<void>;
 };
 
 const protectedRoutes = ['/'];
@@ -23,59 +24,63 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const router = useRouter();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [vault, setVault] = useState<VaultItem[]>([]);
+  const [vault, setVault] = useState<Vault>({});
   const [vaultKey, setVaultKey] = useState<string>('');
   const [isAuthChecking, setIsAuthChecking] = useState(true);
 
   const isProtectedRoute = protectedRoutes.includes(pathname);
   const isPublicRoute = publicRoutes.includes(pathname);
 
+  const memoizedRefresh = useCallback(refresh, [isPublicRoute, isProtectedRoute, router]);
+
   useEffect(() => {
-    const execute = async (): Promise<void> => {
-      try {
-        const { isAuth } = await checkAuth();
-        setIsAuthenticated(isAuth);
+    memoizedRefresh();
+  }, [pathname, memoizedRefresh]);
 
-        if (isAuth) {
-          const storedVault = window.sessionStorage.getItem('vault');
-          const storedVaultKey = window.sessionStorage.getItem('vault-key');
+  async function refresh(): Promise<void> {
+    try {
+      const { isAuth } = await checkAuth();
+      setIsAuthenticated(isAuth);
 
-          if (storedVault) {
-            setVault(JSON.parse(storedVault));
-          }
+      if (isAuth) {
+        const storedVault = window.sessionStorage.getItem('vault');
+        const storedVaultKey = window.sessionStorage.getItem('vault-key');
 
-          if (storedVaultKey) {
-            setVaultKey(storedVaultKey);
-          }
-
-          if (isPublicRoute) {
-            router.push('/');
-          }
-        } else {
-          if (!isPublicRoute) {
-            router.push('/sign-in');
-          }
+        if (storedVault) {
+          setVault(JSON.parse(storedVault));
         }
-      } catch (error) {
-        console.error('Error checking authentication:', error);
-        setIsAuthenticated(false);
 
-        if (isProtectedRoute) {
+        if (storedVaultKey) {
+          setVaultKey(storedVaultKey);
+        }
+
+        if (isPublicRoute) {
+          router.push('/');
+        }
+      } else {
+        if (!isPublicRoute) {
           router.push('/sign-in');
         }
-      } finally {
-        setIsAuthChecking(false);
       }
-    };
+    } catch (error) {
+      console.error('Error checking authentication:', error);
+      setIsAuthenticated(false);
 
-    execute();
-  }, [pathname]);
+      if (isProtectedRoute) {
+        router.push('/sign-in');
+      }
+    } finally {
+      setIsAuthChecking(false);
+    }
+  }
 
   if (isAuthChecking) {
     return <div>Loading...</div>;
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, vault, vaultKey, isAuthChecking }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ isAuthenticated, vault, vaultKey, isAuthChecking, refresh: memoizedRefresh }}>
+      {children}
+    </AuthContext.Provider>
   );
 };

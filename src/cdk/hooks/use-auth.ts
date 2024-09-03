@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 
-import { AuthContext } from '@/cdk/providers/auth.provider';
+import { AuthContext, AuthContextType } from '@/cdk/providers/auth.provider';
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
 
   if (context === undefined) {

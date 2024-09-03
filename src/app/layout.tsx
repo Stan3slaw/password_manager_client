@@ -5,6 +5,7 @@ import React from 'react';
 
 import { AuthProvider } from '@/cdk/providers/auth.provider';
 import ReactQueryProvider from '@/cdk/providers/react-query.provider';
+import ThemeProvider from '@/cdk/providers/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -23,10 +24,12 @@ const RootLayout: React.FC<
     <html lang='en'>
       <ReactQueryProvider>
         <body className={inter.className}>
-          <AuthProvider>
-            {children}
-            <Toaster />
-          </AuthProvider>
+          <ThemeProvider attribute='class' defaultTheme='dark' enableSystem disableTransitionOnChange>
+            <AuthProvider>
+              {children}
+              <Toaster />
+            </AuthProvider>
+          </ThemeProvider>
         </body>
       </ReactQueryProvider>
     </html>
