@@ -8,7 +8,14 @@ import { useVault } from '@/cdk/hooks/use-vault';
 import { encryptVault } from '@/cdk/utils/crypto.util';
 import FormInput from '@/components/shared/form-input/form-input';
 import { Button } from '@/components/ui/button';
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
 import { toast } from '@/components/ui/use-toast';
 
@@ -69,9 +76,9 @@ const CreateVaultGroupModal: React.FC<VaultGroupFormProps> = ({ existedVaultGrou
   return (
     <DialogContent className='sm:max-w-[425px]'>
       <DialogHeader>
-        <DialogTitle>{isCreationFlow ? 'Create' : 'Edit'} vault group name</DialogTitle>
+        <DialogTitle>{isCreationFlow ? 'Create' : 'Edit'} vault group</DialogTitle>
         <DialogDescription>
-          Make changes to your vault group name here. Click save when you&apos;re done.
+          Make changes to your vault group here. Click {isCreationFlow ? 'create' : 'edit'} when you&apos;re done.
         </DialogDescription>
       </DialogHeader>
       <Form {...form}>
@@ -86,7 +93,9 @@ const CreateVaultGroupModal: React.FC<VaultGroupFormProps> = ({ existedVaultGrou
             />
           </div>
           <DialogFooter>
-            <Button type='submit'>Save changes</Button>
+            <DialogTrigger asChild>
+              <Button type='submit'>{isCreationFlow ? 'Create' : 'Edit'}</Button>
+            </DialogTrigger>
           </DialogFooter>
         </form>
       </Form>

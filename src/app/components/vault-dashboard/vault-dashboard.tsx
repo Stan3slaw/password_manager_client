@@ -38,7 +38,6 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const [isEditingFlow, setIsEditingFlow] = useState(false);
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null | undefined>();
-  const [selectedVaultGroup, setSelectedVaultGroup] = useState(vault[Object.keys(vault)[0]] ?? []);
   const [selectedVaultGroupName, setSelectedVaultGroupName] = useState(Object.keys(vault)[0]);
 
   const isCreationFlow = selectedVaultItem === null;
@@ -125,6 +124,11 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
     setIsEditingFlow(true);
   }
 
+  function handleSelectVaultGroup(vaultGroup: string): void {
+    setSelectedVaultGroupName(vaultGroup);
+    setSelectedVaultItem(undefined);
+  }
+
   return (
     <div className='h-screen flex justify-center items-center p-4'>
       <TooltipProvider delayDuration={0}>
@@ -154,7 +158,7 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
             <VaultGroupList
               isCollapsed={isCollapsed}
               selectedVaultGroupName={selectedVaultGroupName}
-              setSelectedVaultGroupName={setSelectedVaultGroupName}
+              onSelectVaultGroup={handleSelectVaultGroup}
               vaultGroups={Object.keys(vault) ?? []}
             />
           </ResizablePanel>
@@ -175,7 +179,7 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
             </div>
             <Separator className='mb-4' />
             <VaultList
-              items={selectedVaultGroup}
+              items={vault[selectedVaultGroupName]}
               selectedVaultItem={selectedVaultItem}
               setSelectedVaultItem={handleSelectVaultItem}
             />

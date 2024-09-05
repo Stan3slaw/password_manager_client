@@ -47,12 +47,14 @@ const DisplayVault: React.FC<VaultDisplayProps<VaultFormData>> = ({
               </>
             )}
           </div>
-          <Separator />
 
           {isCreationFlow || vaultItem || isEditingFlow ? (
-            <div className='p-4'>
-              <CreateUpdateVaultForm form={form} readOnly={!isCreationFlow && !isEditingFlow} />
-            </div>
+            <>
+              <Separator />
+              <div className='p-4'>
+                <CreateUpdateVaultForm form={form} readOnly={!isCreationFlow && !isEditingFlow} />
+              </div>
+            </>
           ) : (
             <div className='p-8 text-center text-muted-foreground'>No vault selected</div>
           )}

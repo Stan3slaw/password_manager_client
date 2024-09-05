@@ -25,16 +25,15 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const isProtectedRoute = protectedRoutes.includes(pathname);
   const isPublicRoute = publicRoutes.includes(pathname);
 
-  const [vault, setVault] = useState<Vault | null>({});
-  const [vaultKey, setVaultKey] = useState<string | null>('');
+  const [vault, setVault] = useState<Vault>({});
+  const [vaultKey, setVaultKey] = useState<string>('');
   const [isVaultUpdating, setIsVaultUpdating] = useState(true);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
-  const memoizedRefresh = useCallback(refresh, [isProtectedRoute, router]);
+  const memoizedRefresh = useCallback(refresh, [isProtectedRoute, isPublicRoute, router]);
 
   useEffect(() => {
-    memoizedRefresh().then(() => {
-      setIsVaultUpdating(false);
-    });
+    void memoizedRefresh();
   }, [memoizedRefresh]);
 
   async function refresh(): Promise<void> {
@@ -54,20 +53,20 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       console.error('Error updating vault: No vault or vault key were found');
 
       if (isProtectedRoute) {
-        setVault(null);
-        setVaultKey(null);
+        setIsSigningOut(true);
 
         await signOut().then(() => {
           router.push('/sign-in');
         });
       } else if (isPublicRoute) {
-        setVault({});
-        setVaultKey('');
+        setIsSigningOut(false);
       }
     }
+
+    setIsVaultUpdating(false);
   }
 
-  if (isVaultUpdating || vault === null || vaultKey === null) {
+  if (isVaultUpdating || isSigningOut) {
     return (
       <div className='h-screen flex items-center justify-center'>
         <Icons.spinner className='animate-spin' />

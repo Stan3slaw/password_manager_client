@@ -9,14 +9,14 @@ interface VaultGroupListProps {
   isCollapsed: boolean;
   selectedVaultGroupName: string;
   vaultGroups: string[];
-  setSelectedVaultGroupName: (name: string) => void;
+  onSelectVaultGroup: (name: string) => void;
 }
 
 const VaultGroupList: React.FC<VaultGroupListProps> = ({
   vaultGroups,
   isCollapsed,
   selectedVaultGroupName,
-  setSelectedVaultGroupName,
+  onSelectVaultGroup,
 }) => {
   return (
     <div data-collapsed={isCollapsed} className='group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2'>
@@ -28,7 +28,7 @@ const VaultGroupList: React.FC<VaultGroupListProps> = ({
             <Tooltip key={index} delayDuration={0}>
               <TooltipTrigger asChild>
                 <Button
-                  onClick={() => setSelectedVaultGroupName(vaultGroup)}
+                  onClick={() => onSelectVaultGroup(vaultGroup)}
                   variant={isGroupChosen ? 'default' : 'ghost'}
                   size='icon'
                   className={cn(
@@ -46,7 +46,7 @@ const VaultGroupList: React.FC<VaultGroupListProps> = ({
             </Tooltip>
           ) : (
             <Button
-              onClick={() => setSelectedVaultGroupName(vaultGroup)}
+              onClick={() => onSelectVaultGroup(vaultGroup)}
               key={index}
               variant={isGroupChosen ? 'default' : 'ghost'}
               size='sm'
