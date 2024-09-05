@@ -7,24 +7,15 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
 import { saveVault } from '@/api';
-import CreateVaultGroupModal from '@/app/components/create-vault-group-modal/create-vault-group-modal';
 import DisplayVault from '@/app/components/display-vault/display-vault';
+import UserDropdownMenu from '@/app/components/user-dropdown-menu/user-dropdown-menu';
 import VaultGroupList from '@/app/components/vault-groups-list/vault-group-list';
 import VaultList from '@/app/components/vault-list/vault-list';
-import { useAuth } from '@/cdk/hooks/use-auth';
+import { useVault } from '@/cdk/hooks/use-vault';
 import { VaultFormData, VaultItem } from '@/cdk/types/vault.type';
 import { cn } from '@/cdk/utils/cn.util';
 import { encryptVault } from '@/cdk/utils/crypto.util';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogTrigger } from '@/components/ui/dialog';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Icons } from '@/components/ui/icons';
 import { Input } from '@/components/ui/input';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Separator } from '@/components/ui/separator';
@@ -42,7 +33,7 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
   defaultCollapsed = false,
   navCollapsedSize,
 }) => {
-  const { vault, vaultKey, refresh } = useAuth();
+  const { vault, vaultKey, refresh } = useVault();
 
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const [isEditingFlow, setIsEditingFlow] = useState(false);
@@ -158,32 +149,7 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
               document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(false)}`;
             }}
             className={cn(isCollapsed && 'min-w-[50px] transition-all duration-300 ease-in-out')}>
-            <Dialog>
-              <DropdownMenu>
-                <DropdownMenuTrigger className='w-full'>
-                  <div className={cn('flex h-[52px] items-center justify-center', isCollapsed ? 'h-[52px]' : 'px-2')}>
-                    <div
-                      className={cn(
-                        'flex h-10 w-full items-center rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 gap-2 [&>span]:flex [&>span]:items-center [&>span]:gap-1 [&>span]:truncate [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0',
-                        isCollapsed &&
-                          'flex h-9 w-9 shrink-0 items-center justify-center p-0 [&>svg]:w-auto [&>span]:hidden'
-                      )}>
-                      <Icons.logo />
-                      <span className={cn('ml-2', isCollapsed && 'hidden')}>user@gmail.com</span>
-                    </div>
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align='start'>
-                  <DialogTrigger asChild>
-                    <DropdownMenuItem>Create New Vault</DropdownMenuItem>
-                  </DialogTrigger>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Logout</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <CreateVaultGroupModal />
-            </Dialog>
-
+            <UserDropdownMenu isCollapsed={isCollapsed} />
             <Separator />
             <VaultGroupList
               isCollapsed={isCollapsed}

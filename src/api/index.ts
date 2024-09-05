@@ -1,3 +1,5 @@
+import { AxiosRequestConfig } from 'axios';
+
 import axiosInstance from '@/cdk/lib/axios-instance.lib';
 
 export const signUp = async (payload: {
@@ -16,6 +18,10 @@ export const signIn = async (payload: {
   return axiosInstance
     .post<{ salt: string; vault: string; accessToken: string }>('auth/sign-in', payload)
     .then((res) => res.data);
+};
+
+export const signOut = async (): Promise<void> => {
+  return axiosInstance.post('auth/sign-out');
 };
 
 export const checkAuth = async (): Promise<{ isAuth: true }> => {

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
 import { saveVault } from '@/api';
-import { useAuth } from '@/cdk/hooks/use-auth';
+import { useVault } from '@/cdk/hooks/use-vault';
 import { encryptVault } from '@/cdk/utils/crypto.util';
 import FormInput from '@/components/shared/form-input/form-input';
 import { Button } from '@/components/ui/button';
@@ -23,7 +23,7 @@ interface VaultGroupFormProps {
 const CreateVaultGroupModal: React.FC<VaultGroupFormProps> = ({ existedVaultGroup }) => {
   const isCreationFlow = !existedVaultGroup;
 
-  const { vault, vaultKey, refresh } = useAuth();
+  const { vault, vaultKey, refresh } = useVault();
 
   const mutation = useMutation(saveVault, {
     onSuccess: async () => {
