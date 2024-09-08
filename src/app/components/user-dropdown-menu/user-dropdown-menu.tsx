@@ -2,7 +2,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { signOut } from '@/api';
-import CreateVaultGroupModal from '@/app/components/create-vault-group-modal/create-vault-group-modal';
+import CreateUpdateVaultGroupModal from '@/app/components/create-update-vault-group-modal/create-update-vault-group-modal';
 import { cn } from '@/cdk/utils/cn.util';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import {
@@ -50,7 +50,7 @@ const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ isCollapsed }) => {
           <DropdownMenuItem onClick={handleSignOut}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <CreateVaultGroupModal />
+      <CreateUpdateVaultGroupModal />
     </Dialog>
   );
 };

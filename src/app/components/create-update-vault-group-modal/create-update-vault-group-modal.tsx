@@ -1,9 +1,11 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { AxiosError } from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
 import { saveVault } from '@/api';
+import { createUpdateVaultGroupSchema } from '@/app/components/create-update-vault-group-modal/create-update-vault-group-validation-schema';
 import { useVault } from '@/cdk/hooks/use-vault';
 import { encryptVault } from '@/cdk/utils/crypto.util';
 import FormInput from '@/components/shared/form-input/form-input';
@@ -27,13 +29,14 @@ interface VaultGroupFormProps {
   existedVaultGroup?: string;
 }
 
-const CreateVaultGroupModal: React.FC<VaultGroupFormProps> = ({ existedVaultGroup }) => {
+const CreateUpdateVaultGroupModal: React.FC<VaultGroupFormProps> = ({ existedVaultGroup }) => {
   const isCreationFlow = !existedVaultGroup;
 
   const { vault, vaultKey, refresh } = useVault();
 
   const mutation = useMutation(saveVault, {
     onSuccess: async () => {
+      form.reset();
       await refresh();
     },
     onError: (error: AxiosError) => {
@@ -49,14 +52,23 @@ const CreateVaultGroupModal: React.FC<VaultGroupFormProps> = ({ existedVaultGrou
     values: {
       vaultGroup: existedVaultGroup ?? '',
     },
+    resolver: zodResolver(createUpdateVaultGroupSchema),
+    mode: 'onTouched',
   });
 
   function handleSubmit(): void {
     const { vaultGroup } = form.getValues();
 
     if (existedVaultGroup) {
-      vault[existedVaultGroup] = vault[vaultGroup];
-      delete vault[vaultGroup];
+      vault[vaultGroup] = vault[existedVaultGroup];
+      delete vault[existedVaultGroup];
+    }
+
+    if (vault.hasOwnProperty(vaultGroup)) {
+      toast({
+        variant: 'destructive',
+        description: 'Vault name is already taken. Please choose another name for your vault.',
+      });
     } else {
       vault[vaultGroup] = [];
     }
@@ -103,4 +115,4 @@ const CreateVaultGroupModal: React.FC<VaultGroupFormProps> = ({ existedVaultGrou
   );
 };
 
-export default CreateVaultGroupModal;
+export default CreateUpdateVaultGroupModal;
