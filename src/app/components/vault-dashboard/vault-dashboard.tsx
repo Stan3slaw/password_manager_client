@@ -1,8 +1,7 @@
 'use client';
 
 import { AxiosError } from 'axios';
-import { Search } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
@@ -15,8 +14,8 @@ import { useVault } from '@/cdk/hooks/use-vault';
 import { VaultFormData, VaultItem } from '@/cdk/types/vault.type';
 import { cn } from '@/cdk/utils/cn.util';
 import { encryptVault } from '@/cdk/utils/crypto.util';
+import SearchInput from '@/components/shared/search-input/search-input';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Separator } from '@/components/ui/separator';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -39,8 +38,10 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
   const [isEditingFlow, setIsEditingFlow] = useState(false);
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null | undefined>();
   const [selectedVaultGroupName, setSelectedVaultGroupName] = useState(Object.keys(vault)[0]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const isCreationFlow = selectedVaultItem === null;
+  const vaultItems = vault[selectedVaultGroupName];
 
   const mutation = useMutation(saveVault, {
     onSuccess: async () => {
@@ -75,15 +76,12 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
     if (isCreationFlow) {
       updatedVault = {
         ...vault,
-        [selectedVaultGroupName]: [
-          ...vault[selectedVaultGroupName],
-          { ...vaultValues, createdAt: new Date(), updatedAt: new Date() },
-        ],
+        [selectedVaultGroupName]: [...vaultItems, { ...vaultValues, createdAt: new Date(), updatedAt: new Date() }],
       };
     } else {
       updatedVault = {
         ...vault,
-        [selectedVaultGroupName]: vault[selectedVaultGroupName].map((vaultItem) => {
+        [selectedVaultGroupName]: vaultItems.map((vaultItem) => {
           if (vaultItem.id === vaultValues.id) {
             return { ...vaultItem, ...vaultValues, updatedAt: new Date() };
           }
@@ -104,6 +102,15 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
       encryptedVault,
     });
   }
+
+  const matchedVaultItems = useMemo(
+    () =>
+      vaultItems.filter((vaultItem) => {
+        const vaultItemInfo = vaultItem.name + vaultItem.website + vaultItem.username;
+        return vaultItemInfo.toLowerCase().includes(searchQuery.toLowerCase());
+      }),
+    [vaultItems, searchQuery]
+  );
 
   function handleSelectVaultItem(vaultItem: VaultItem): void {
     setSelectedVaultItem(vaultItem);
@@ -165,21 +172,14 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
             <div className='flex items-center justify-between p-2'>
-              <div className='w-full mr-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
-                <form>
-                  <div className='relative'>
-                    <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
-                    <Input placeholder='Search' className='pl-8' />
-                  </div>
-                </form>
-              </div>
+              <SearchInput onChange={setSearchQuery} />
               <Button variant='outline' size='icon' onClick={handleCreateNewVaultItem}>
                 +
               </Button>
             </div>
             <Separator className='mb-4' />
             <VaultList
-              items={vault[selectedVaultGroupName]}
+              items={matchedVaultItems}
               selectedVaultItem={selectedVaultItem}
               setSelectedVaultItem={handleSelectVaultItem}
             />
