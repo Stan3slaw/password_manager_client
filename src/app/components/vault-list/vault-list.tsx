@@ -44,7 +44,7 @@ const VaultList: React.FC<VaultListProps> = ({ items, selectedVaultItem, setSele
               <div className='flex items-center'>
                 <div className='flex items-center gap-2'>
                   {getVaultItemIcon(item.password)}
-                  <div className='font-semibold'>{item.name}</div>
+                  <div className='font-semibold'>{item.name ? item.name : 'Untitled'}</div>
                 </div>
                 <div
                   className={cn(

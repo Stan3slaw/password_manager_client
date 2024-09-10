@@ -41,7 +41,6 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   const isCreationFlow = selectedVaultItem === null;
-  const vaultItems = vault[selectedVaultGroupName];
 
   const mutation = useMutation(saveVault, {
     onSuccess: async () => {
@@ -68,6 +67,17 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
       password: selectedVaultItem?.password ?? '',
     },
   });
+
+  const vaultItems = useMemo(() => (vault ? vault[selectedVaultGroupName] : []), [vault, selectedVaultGroupName]);
+
+  const matchedVaultItems = useMemo(
+    () =>
+      vaultItems.filter((vaultItem) => {
+        const vaultItemInfo = vaultItem.name + vaultItem.website + vaultItem.username;
+        return vaultItemInfo.toLowerCase().includes(searchQuery.toLowerCase());
+      }),
+    [vaultItems, searchQuery]
+  );
 
   function handleSubmit(): void {
     const vaultValues = form.getValues();
@@ -103,15 +113,6 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
     });
   }
 
-  const matchedVaultItems = useMemo(
-    () =>
-      vaultItems.filter((vaultItem) => {
-        const vaultItemInfo = vaultItem.name + vaultItem.website + vaultItem.username;
-        return vaultItemInfo.toLowerCase().includes(searchQuery.toLowerCase());
-      }),
-    [vaultItems, searchQuery]
-  );
-
   function handleSelectVaultItem(vaultItem: VaultItem): void {
     setSelectedVaultItem(vaultItem);
     setIsEditingFlow(false);
@@ -122,18 +123,41 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
     setIsEditingFlow(false);
   }
 
-  function handleCancel(): void {
-    setSelectedVaultItem(undefined);
+  function handleCancelEditVaultItem(): void {
+    if (isCreationFlow) {
+      setSelectedVaultItem(undefined);
+    } else {
+      form.reset();
+    }
+
     setIsEditingFlow(false);
   }
 
-  function handleEdit(): void {
+  function handleEditVaultItem(): void {
     setIsEditingFlow(true);
   }
 
   function handleSelectVaultGroup(vaultGroup: string): void {
     setSelectedVaultGroupName(vaultGroup);
     setSelectedVaultItem(undefined);
+  }
+
+  function handleDeleteVaultItem(): void {
+    const updatedVault = {
+      ...vault,
+      [selectedVaultGroupName]: [...vaultItems.filter((item) => item.id !== selectedVaultItem?.id)],
+    };
+
+    const encryptedVault = encryptVault({
+      vault: JSON.stringify(updatedVault),
+      vaultKey,
+    });
+
+    window.sessionStorage.setItem('vault', JSON.stringify(updatedVault));
+
+    mutation.mutate({
+      encryptedVault,
+    });
   }
 
   return (
@@ -191,9 +215,10 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
               isEditingFlow={isEditingFlow}
               form={form}
               vaultItem={selectedVaultItem}
-              onEdit={handleEdit}
+              onEdit={handleEditVaultItem}
               onSubmit={handleSubmit}
-              onCancel={handleCancel}
+              onCancel={handleCancelEditVaultItem}
+              onDelete={handleDeleteVaultItem}
             />
           </ResizablePanel>
         </ResizablePanelGroup>

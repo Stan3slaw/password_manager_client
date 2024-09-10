@@ -2,7 +2,7 @@ import React, { HTMLInputAutoCompleteAttribute, HTMLInputTypeAttribute } from 'r
 import { FieldValues, UseFormReturn, Path } from 'react-hook-form';
 
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Input, InputVariant } from '@/components/ui/input';
 
 interface FormInputProps<T extends FieldValues> {
   disabled?: boolean;
@@ -15,6 +15,8 @@ interface FormInputProps<T extends FieldValues> {
   autoComplete?: HTMLInputAutoCompleteAttribute;
   autoCorrect?: string;
   readOnly?: boolean;
+  variant?: InputVariant;
+  className?: string;
 }
 
 const FormInput = <T extends FieldValues>({
@@ -28,6 +30,8 @@ const FormInput = <T extends FieldValues>({
   autoComplete,
   autoCorrect,
   readOnly,
+  variant,
+  className,
 }: FormInputProps<T>): React.JSX.Element => {
   return (
     <FormField
@@ -47,6 +51,8 @@ const FormInput = <T extends FieldValues>({
               autoComplete={autoComplete}
               autoCorrect={autoCorrect}
               readOnly={readOnly}
+              variant={variant}
+              className={className}
             />
           </FormControl>
 
