@@ -1,10 +1,9 @@
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { signOut } from '@/api';
-import CreateUpdateVaultGroupModal from '@/app/components/create-update-vault-group-modal/create-update-vault-group-modal';
+import CreateUpdateVaultModal from '@/app/components/vault-list/components/create-update-vault-modal/create-update-vault-modal';
 import { cn } from '@/cdk/utils/cn.util';
-import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import {
   DropdownMenuContent,
   DropdownMenuItem,
@@ -21,6 +20,8 @@ interface UserDropdownMenuProps {
 const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ isCollapsed }) => {
   const router = useRouter();
 
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
   async function handleSignOut(): Promise<void> {
     await signOut().then(() => {
       router.push('/sign-in');
@@ -28,7 +29,7 @@ const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ isCollapsed }) => {
   }
 
   return (
-    <Dialog>
+    <>
       <DropdownMenu>
         <DropdownMenuTrigger className='w-full'>
           <div className={cn('flex h-[52px] items-center justify-center', isCollapsed ? 'h-[52px]' : 'px-2')}>
@@ -43,15 +44,13 @@ const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ isCollapsed }) => {
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='start'>
-          <DialogTrigger asChild>
-            <DropdownMenuItem>Create New Vault</DropdownMenuItem>
-          </DialogTrigger>
+          <DropdownMenuItem onClick={() => setIsCreateModalOpen(true)}>Create New Vault</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleSignOut}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <CreateUpdateVaultGroupModal />
-    </Dialog>
+      <CreateUpdateVaultModal isOpen={isCreateModalOpen} setIsOpen={setIsCreateModalOpen} />
+    </>
   );
 };
 

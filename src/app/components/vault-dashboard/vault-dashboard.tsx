@@ -8,8 +8,8 @@ import { useMutation } from 'react-query';
 import { saveVault } from '@/api';
 import DisplayVault from '@/app/components/display-vault/display-vault';
 import UserDropdownMenu from '@/app/components/user-dropdown-menu/user-dropdown-menu';
-import VaultGroupList from '@/app/components/vault-groups-list/vault-group-list';
 import VaultItemsList from '@/app/components/vault-items-list/vault-items-list';
+import VaultList from '@/app/components/vault-list/vault-list';
 import { useVault } from '@/cdk/hooks/use-vault';
 import { VaultFormData, VaultItem } from '@/cdk/types/vault.type';
 import { cn } from '@/cdk/utils/cn.util';
@@ -37,7 +37,7 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const [isEditingFlow, setIsEditingFlow] = useState(false);
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null | undefined>();
-  const [selectedVaultGroupName, setSelectedVaultGroupName] = useState(Object.keys(vault)[0]);
+  const [selectedVaultName, setSelectedVaultName] = useState(Object.keys(vault)[0]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const isCreationFlow = selectedVaultItem === null;
@@ -68,11 +68,11 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
     },
   });
 
-  const vaultItems = useMemo(() => (vault ? vault[selectedVaultGroupName] : []), [vault, selectedVaultGroupName]);
+  const vaultItems = useMemo(() => (vault ? vault[selectedVaultName] : []), [vault, selectedVaultName]);
 
   const matchedVaultItems = useMemo(
     () =>
-      vaultItems.filter((vaultItem) => {
+      vaultItems?.filter((vaultItem) => {
         const vaultItemInfo = vaultItem.name + vaultItem.website + vaultItem.username;
         return vaultItemInfo.toLowerCase().includes(searchQuery.toLowerCase());
       }),
@@ -86,12 +86,12 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
     if (isCreationFlow) {
       updatedVault = {
         ...vault,
-        [selectedVaultGroupName]: [...vaultItems, { ...vaultValues, createdAt: new Date(), updatedAt: new Date() }],
+        [selectedVaultName]: [...vaultItems, { ...vaultValues, createdAt: new Date(), updatedAt: new Date() }],
       };
     } else {
       updatedVault = {
         ...vault,
-        [selectedVaultGroupName]: vaultItems.map((vaultItem) => {
+        [selectedVaultName]: vaultItems.map((vaultItem) => {
           if (vaultItem.id === vaultValues.id) {
             return { ...vaultItem, ...vaultValues, updatedAt: new Date() };
           }
@@ -137,15 +137,15 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
     setIsEditingFlow(true);
   }
 
-  function handleSelectVaultGroup(vaultGroup: string): void {
-    setSelectedVaultGroupName(vaultGroup);
+  function handleSelectVault(vaultName: string): void {
+    setSelectedVaultName(vaultName);
     setSelectedVaultItem(undefined);
   }
 
   function handleDeleteVaultItem(): void {
     const updatedVault = {
       ...vault,
-      [selectedVaultGroupName]: [...vaultItems.filter((item) => item.id !== selectedVaultItem?.id)],
+      [selectedVaultName]: [...vaultItems.filter((item) => item.id !== selectedVaultItem?.id)],
     };
 
     const encryptedVault = encryptVault({
@@ -186,11 +186,11 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
             className={cn(isCollapsed && 'min-w-[50px] transition-all duration-300 ease-in-out')}>
             <UserDropdownMenu isCollapsed={isCollapsed} />
             <Separator />
-            <VaultGroupList
+            <VaultList
               isCollapsed={isCollapsed}
-              selectedVaultGroupName={selectedVaultGroupName}
-              onSelectVaultGroup={handleSelectVaultGroup}
-              vaultGroups={Object.keys(vault) ?? []}
+              selectedVaultName={selectedVaultName}
+              onSelectVault={handleSelectVault}
+              vaultNames={Object.keys(vault) ?? []}
             />
           </ResizablePanel>
           <ResizableHandle withHandle />

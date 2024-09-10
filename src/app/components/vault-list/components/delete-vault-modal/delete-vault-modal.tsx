@@ -7,6 +7,7 @@ import { useVault } from '@/cdk/hooks/use-vault';
 import { encryptVault } from '@/cdk/utils/crypto.util';
 import { Button } from '@/components/ui/button';
 import {
+  Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -17,11 +18,13 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from '@/components/ui/use-toast';
 
-interface DeleteVaultGroupModalProps {
-  vaultGroup: string;
+interface DeleteVaultModalProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  vaultName: string;
 }
 
-const DeleteVaultGroupModal: React.FC<DeleteVaultGroupModalProps> = ({ vaultGroup }) => {
+const DeleteVaultModal: React.FC<DeleteVaultModalProps> = ({ isOpen, setIsOpen, vaultName }) => {
   const { vault, vaultKey, refresh } = useVault();
 
   const mutation = useMutation(saveVault, {
@@ -38,8 +41,8 @@ const DeleteVaultGroupModal: React.FC<DeleteVaultGroupModalProps> = ({ vaultGrou
   });
 
   function handleDelete(): void {
-    if (vaultGroup) {
-      delete vault[vaultGroup];
+    if (vaultName) {
+      delete vault[vaultName];
     }
 
     const encryptedVault = encryptVault({
@@ -55,21 +58,23 @@ const DeleteVaultGroupModal: React.FC<DeleteVaultGroupModalProps> = ({ vaultGrou
   }
 
   return (
-    <DialogContent className='sm:max-w-[425px]'>
-      <DialogHeader>
-        <DialogTitle>Delete {vaultGroup} vault group</DialogTitle>
-        <DialogDescription>Deleted vault cannot be restored</DialogDescription>
-      </DialogHeader>
-      <DialogFooter>
-        <DialogClose>
-          <Button variant='ghost'>Cancel</Button>
-        </DialogClose>
-        <DialogTrigger asChild>
-          <Button onClick={handleDelete}>Delete</Button>
-        </DialogTrigger>
-      </DialogFooter>
-    </DialogContent>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent className='sm:max-w-[425px]'>
+        <DialogHeader>
+          <DialogTitle>Delete {vaultName} vault</DialogTitle>
+          <DialogDescription>Deleted vault cannot be restored</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose>
+            <Button variant='ghost'>Cancel</Button>
+          </DialogClose>
+          <DialogTrigger asChild>
+            <Button onClick={handleDelete}>Delete</Button>
+          </DialogTrigger>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default DeleteVaultGroupModal;
+export default DeleteVaultModal;
