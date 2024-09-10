@@ -9,7 +9,7 @@ import { saveVault } from '@/api';
 import DisplayVault from '@/app/components/display-vault/display-vault';
 import UserDropdownMenu from '@/app/components/user-dropdown-menu/user-dropdown-menu';
 import VaultGroupList from '@/app/components/vault-groups-list/vault-group-list';
-import VaultList from '@/app/components/vault-list/vault-list';
+import VaultItemsList from '@/app/components/vault-items-list/vault-items-list';
 import { useVault } from '@/cdk/hooks/use-vault';
 import { VaultFormData, VaultItem } from '@/cdk/types/vault.type';
 import { cn } from '@/cdk/utils/cn.util';
@@ -202,7 +202,7 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
               </Button>
             </div>
             <Separator className='mb-4' />
-            <VaultList
+            <VaultItemsList
               items={matchedVaultItems}
               selectedVaultItem={selectedVaultItem}
               setSelectedVaultItem={handleSelectVaultItem}

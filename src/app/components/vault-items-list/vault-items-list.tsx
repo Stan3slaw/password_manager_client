@@ -1,9 +1,8 @@
-import { ShieldCheck, ShieldClose, ShieldAlert } from 'lucide-react';
 import React from 'react';
 
+import { getVaultItemIcon } from '@/app/components/vault-items-list/utils/get-vault-item-icon';
 import { VaultItem } from '@/cdk/types/vault.type';
 import { cn } from '@/cdk/utils/cn.util';
-import { getPasswordStrength } from '@/cdk/utils/get-password-strength';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface VaultListProps {
@@ -12,23 +11,7 @@ interface VaultListProps {
   items: VaultItem[];
 }
 
-const getVaultItemIcon = (password: string): React.ReactNode => {
-  const passwordStrength = getPasswordStrength(password);
-  switch (passwordStrength) {
-    case 1:
-      return <ShieldClose className='text-red-400' />;
-    case 2:
-      return <ShieldClose className='text-red-400' />;
-    case 3:
-      return <ShieldAlert className='text-orange-400' />;
-    case 4:
-      return <ShieldCheck className='text-green-400' />;
-    case 5:
-      return <ShieldCheck className='text-purple-400' />;
-  }
-};
-
-const VaultList: React.FC<VaultListProps> = ({ items, selectedVaultItem, setSelectedVaultItem }) => {
+const VaultItemsList: React.FC<VaultListProps> = ({ items, selectedVaultItem, setSelectedVaultItem }) => {
   return (
     <ScrollArea className='h-screen'>
       <div className='flex flex-col gap-2 p-4 pt-0'>
@@ -62,4 +45,4 @@ const VaultList: React.FC<VaultListProps> = ({ items, selectedVaultItem, setSele
   );
 };
 
-export default VaultList;
+export default VaultItemsList;
