@@ -1,7 +1,8 @@
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
 
-import { signOut } from '@/api';
+import { getCurrentUser, signOut } from '@/api';
 import CreateUpdateVaultModal from '@/app/components/vault-list/components/create-update-vault-modal/create-update-vault-modal';
 import { cn } from '@/cdk/utils/cn.util';
 import {
@@ -22,6 +23,8 @@ const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ isCollapsed }) => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+  const { data, isLoading } = useQuery('currentUser', () => getCurrentUser());
+
   async function handleSignOut(): Promise<void> {
     await signOut().then(() => {
       router.push('/sign-in');
@@ -39,7 +42,9 @@ const UserDropdownMenu: React.FC<UserDropdownMenuProps> = ({ isCollapsed }) => {
                 isCollapsed && 'flex h-9 w-9 shrink-0 items-center justify-center p-0 [&>svg]:w-auto [&>span]:hidden'
               )}>
               <Icons.logo />
-              <span className={cn('ml-2', isCollapsed && 'hidden')}>user@gmail.com</span>
+              <span className={cn('ml-2', isCollapsed && 'hidden')}>
+                {isLoading ? <Icons.spinner className='mr-2 h-4 w-4 animate-spin' /> : data?.email}
+              </span>
             </div>
           </div>
         </DropdownMenuTrigger>

@@ -28,6 +28,10 @@ export const checkAuth = async (): Promise<{ isAuth: true }> => {
   return axiosInstance.get('auth/check-auth').then((res) => res.data);
 };
 
+export const getCurrentUser = async (): Promise<{ id: string; email: string }> => {
+  return axiosInstance.post('auth/current-user').then((res) => res.data);
+};
+
 export const saveVault = async ({ encryptedVault }: { encryptedVault: string }): Promise<void> => {
   return axiosInstance.put('vault', { encryptedVault }).then((res) => res.data);
 };
