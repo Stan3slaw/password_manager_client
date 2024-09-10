@@ -2,8 +2,8 @@ import { isEmpty } from 'lodash';
 import React from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
-import CreateUpdateVaultForm from '@/app/components/create-update-vault-form/create-update-vault-form';
-import DeleteVaultItemModal from '@/app/components/delete-vault-item-modal/delete-vault-item-modal';
+import CreateUpdateVaultItemForm from '@/app/components/display-vault-item/components/create-update-vault-item-form/create-update-vault-item-form';
+import DeleteVaultItemModal from '@/app/components/display-vault-item/components/delete-vault-item-modal/delete-vault-item-modal';
 import { VaultFormData, VaultItem } from '@/cdk/types/vault.type';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
@@ -20,7 +20,7 @@ interface VaultDisplayProps<T extends FieldValues> {
   onDelete: () => void;
 }
 
-const DisplayVault: React.FC<VaultDisplayProps<VaultFormData>> = ({
+const DisplayVaultItem: React.FC<VaultDisplayProps<VaultFormData>> = ({
   isCreationFlow,
   isEditingFlow,
   form,
@@ -58,7 +58,7 @@ const DisplayVault: React.FC<VaultDisplayProps<VaultFormData>> = ({
           {isCreationFlow || vaultItem || isEditingFlow ? (
             <>
               <Separator />
-              <CreateUpdateVaultForm
+              <CreateUpdateVaultItemForm
                 vaultItem={vaultItem}
                 isCreationFlow={isCreationFlow}
                 form={form}
@@ -66,7 +66,7 @@ const DisplayVault: React.FC<VaultDisplayProps<VaultFormData>> = ({
               />
             </>
           ) : (
-            <div className='p-8 text-center text-muted-foreground'>No vault selected</div>
+            <div className='p-8 text-center text-muted-foreground'>No vault item selected</div>
           )}
         </div>
       </form>
@@ -74,4 +74,4 @@ const DisplayVault: React.FC<VaultDisplayProps<VaultFormData>> = ({
   );
 };
 
-export default DisplayVault;
+export default DisplayVaultItem;

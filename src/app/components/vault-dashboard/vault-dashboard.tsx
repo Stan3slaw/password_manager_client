@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
 import { saveVault } from '@/api';
-import DisplayVault from '@/app/components/display-vault/display-vault';
+import DisplayVaultItem from '@/app/components/display-vault-item/display-vault-item';
 import UserDropdownMenu from '@/app/components/user-dropdown-menu/user-dropdown-menu';
 import VaultItemsList from '@/app/components/vault-items-list/vault-items-list';
 import VaultList from '@/app/components/vault-list/vault-list';
@@ -210,7 +210,7 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={defaultLayout[2]} minSize={30}>
-            <DisplayVault
+            <DisplayVaultItem
               isCreationFlow={isCreationFlow}
               isEditingFlow={isEditingFlow}
               form={form}

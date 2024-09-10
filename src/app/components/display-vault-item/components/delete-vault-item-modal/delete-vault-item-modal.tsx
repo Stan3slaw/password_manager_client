@@ -27,7 +27,7 @@ const DeleteVaultItemModal: React.FC<DeleteVaultItemModalProps> = ({ onDelete })
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>Delete vault item</DialogTitle>
-          <DialogDescription>Deleted vault cannot be restored</DialogDescription>
+          <DialogDescription>Deleted vault item cannot be restored</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose>

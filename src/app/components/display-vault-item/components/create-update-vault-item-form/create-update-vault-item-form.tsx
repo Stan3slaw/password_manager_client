@@ -10,14 +10,14 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { InputVariant } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 
-interface VaultFormProps<T extends FieldValues> {
+interface CreateUpdateVaultItemFormProps<T extends FieldValues> {
   vaultItem?: VaultItem | null;
   isCreationFlow: boolean;
   form: UseFormReturn<T>;
   readOnly: boolean;
 }
 
-const CreateUpdateVaultForm: React.FC<VaultFormProps<VaultFormData>> = ({
+const CreateUpdateVaultItemForm: React.FC<CreateUpdateVaultItemFormProps<VaultFormData>> = ({
   vaultItem,
   isCreationFlow,
   form,
@@ -116,4 +116,4 @@ const CreateUpdateVaultForm: React.FC<VaultFormProps<VaultFormData>> = ({
   );
 };
 
-export default CreateUpdateVaultForm;
+export default CreateUpdateVaultItemForm;
