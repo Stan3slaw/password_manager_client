@@ -1,10 +1,11 @@
 import { format } from 'date-fns';
 import { Earth, Lock, User } from 'lucide-react';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
+import VaultCredentialsFormInput from '@/app/components/display-vault-item/components/create-update-vault-item-form/components/vault-credentials-form-input/vault-credentials-form-input';
+import VaultFormInput from '@/app/components/display-vault-item/components/create-update-vault-item-form/components/vault-form-input/vault-form-input';
 import { VaultFormData, VaultItem } from '@/cdk/types/vault.type';
-import { cn } from '@/cdk/utils/cn.util';
 import FormInput from '@/components/shared/form-input/form-input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { InputVariant } from '@/components/ui/input';
@@ -23,6 +24,8 @@ const CreateUpdateVaultItemForm: React.FC<CreateUpdateVaultItemFormProps<VaultFo
   form,
   readOnly,
 }) => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+
   const vaultId = useMemo(() => crypto.randomUUID(), []);
 
   useEffect(() => {
@@ -30,6 +33,12 @@ const CreateUpdateVaultItemForm: React.FC<CreateUpdateVaultItemFormProps<VaultFo
       form.setValue('id', vaultId);
     }
   }, [form, vaultId, vaultItem]);
+
+  function handlePasswordVisibilityChange(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+    e.preventDefault();
+
+    setIsPasswordVisible((state) => !state);
+  }
 
   return (
     <div className='p-4'>
@@ -46,57 +55,48 @@ const CreateUpdateVaultItemForm: React.FC<CreateUpdateVaultItemFormProps<VaultFo
           />
         </CardHeader>
         <CardContent className='grid gap-4'>
-          <div className='border-accent border rounded-md -mx-2 space-x-4'>
+          <div className='border-accent border rounded-md space-x-4'>
             <div>
-              <div className='flex items-start space-x-4 rounded-t-md rounded-tl-md p-2 transition-all hover:bg-accent hover:text-accent-foreground w-full'>
-                <User className='mt-px h-5 w-5' />
-                <div className='space-y-1 w-full'>
-                  <p className='text-sm font-medium leading-none'>username</p>
-                  <FormInput<VaultFormData>
-                    form={form}
-                    placeholder={isCreationFlow ? 'Username' : '—'}
-                    name='username'
-                    disabled={form.formState.isSubmitting}
-                    variant={InputVariant.Standart}
-                    className={cn(readOnly && 'text-sm text-muted-foreground', 'h-5 px-0')}
-                    readOnly={readOnly}
-                  />
-                </div>
-              </div>
-              <Separator />
-              <div className='flex items-start space-x-4 rounded-b-md rounded-bl-md p-2 transition-all hover:bg-accent hover:text-accent-foreground w-full'>
-                <Lock className='mt-px h-5 w-5' />
-                <div className='space-y-1 w-full'>
-                  <p className='text-sm font-medium leading-none'>password</p>
-                  <FormInput<VaultFormData>
-                    form={form}
-                    placeholder={isCreationFlow ? 'Password' : '—'}
-                    name='password'
-                    disabled={form.formState.isSubmitting}
-                    variant={InputVariant.Standart}
-                    className={cn(readOnly && 'text-sm text-muted-foreground', 'h-5 px-0')}
-                    readOnly={readOnly}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className='-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground w-full'>
-            <Earth className='mt-px h-5 w-5' />
-            <div className='space-y-1 w-full'>
-              <p className='text-sm font-medium leading-none'>website</p>
-              <FormInput<VaultFormData>
+              <VaultCredentialsFormInput<VaultFormData>
+                isCreationFlow={isCreationFlow}
                 form={form}
-                type='url'
-                placeholder={isCreationFlow ? 'Website' : '—'}
-                name='website'
-                disabled={form.formState.isSubmitting}
-                variant={InputVariant.Standart}
-                className={cn(readOnly && 'text-sm text-muted-foreground', 'h-5 px-0')}
                 readOnly={readOnly}
+                placeholder='Username'
+                label='username'
+                name='username'
+                valueToCopy={form.getValues().username}
+                icon={<User className='mt-px h-5 w-5' />}
+                className='rounded-t-md rounded-tl-md'
+              />
+
+              <Separator />
+              <VaultCredentialsFormInput<VaultFormData>
+                isCreationFlow={isCreationFlow}
+                form={form}
+                readOnly={readOnly}
+                placeholder='Password'
+                label='password'
+                name='password'
+                valueToCopy={form.getValues().password}
+                icon={<Lock className='mt-px h-5 w-5' />}
+                className='rounded-b-md rounded-bl-md'
+                isPasswordField
+                isPasswordVisible={isPasswordVisible}
+                onPasswordVisibilityChange={handlePasswordVisibilityChange}
               />
             </div>
           </div>
+          <VaultFormInput
+            form={form}
+            isCreationFlow={isCreationFlow}
+            readOnly={readOnly}
+            placeholder='Website'
+            label='website'
+            name='website'
+            valueToCopy={form.getValues().website}
+            icon={<Earth className='mt-px h-5 w-5' />}
+            type='url'
+          />
           {!isCreationFlow && (
             <>
               <Separator />
