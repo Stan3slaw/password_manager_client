@@ -49,7 +49,7 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setVaultKey(storedVaultKey);
     }
 
-    if (!storedVault || !storedVaultKey) {
+    if (!storedVaultKey) {
       console.error('Error updating vault: No vault or vault key were found');
 
       if (isProtectedRoute) {

@@ -26,14 +26,6 @@ const CreateUpdateVaultItemForm: React.FC<CreateUpdateVaultItemFormProps<VaultFo
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
-  const vaultId = useMemo(() => crypto.randomUUID(), []);
-
-  useEffect(() => {
-    if (form.getValues().id === null) {
-      form.setValue('id', vaultId);
-    }
-  }, [form, vaultId, vaultItem]);
-
   function handlePasswordVisibilityChange(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
     e.preventDefault();
 

@@ -21,7 +21,10 @@ export const signIn = async (payload: {
 };
 
 export const signOut = async (): Promise<void> => {
-  return axiosInstance.post('auth/sign-out');
+  return axiosInstance.post('auth/sign-out').then(() => {
+    sessionStorage.removeItem('vault');
+    sessionStorage.removeItem('vault-key');
+  });
 };
 
 export const checkAuth = async (): Promise<{ isAuth: true }> => {

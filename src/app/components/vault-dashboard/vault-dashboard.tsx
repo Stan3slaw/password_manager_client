@@ -9,6 +9,7 @@ import { saveVault } from '@/api';
 import DisplayVaultItem from '@/app/components/display-vault-item/display-vault-item';
 import UserDropdownMenu from '@/app/components/user-dropdown-menu/user-dropdown-menu';
 import VaultItemsList from '@/app/components/vault-items-list/vault-items-list';
+import CreateUpdateVaultModal from '@/app/components/vault-list/components/create-update-vault-modal/create-update-vault-modal';
 import VaultList from '@/app/components/vault-list/vault-list';
 import { useVault } from '@/cdk/hooks/use-vault';
 import { VaultFormData, VaultItem } from '@/cdk/types/vault.type';
@@ -39,6 +40,7 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null | undefined>();
   const [selectedVaultName, setSelectedVaultName] = useState(Object.keys(vault)[0]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(!Boolean(Object.keys(vault)[0]));
 
   const isCreationFlow = selectedVaultItem === null;
 
@@ -121,6 +123,10 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
   function handleCreateNewVaultItem(): void {
     setSelectedVaultItem(null);
     setIsEditingFlow(false);
+
+    const vaultId = crypto.randomUUID();
+    form.reset();
+    form.setValue('id', vaultId);
   }
 
   function handleCancelEditVaultItem(): void {
@@ -223,6 +229,7 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
           </ResizablePanel>
         </ResizablePanelGroup>
       </TooltipProvider>
+      <CreateUpdateVaultModal isOpen={isCreateModalOpen} setIsOpen={setIsCreateModalOpen} isForceCreateVaultMode />
     </div>
   );
 };

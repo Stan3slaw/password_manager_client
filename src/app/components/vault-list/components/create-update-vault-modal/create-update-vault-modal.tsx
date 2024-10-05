@@ -28,10 +28,16 @@ interface VaultFormData {
 interface VaultFormProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  isForceCreateVaultMode?: boolean;
   existedVaultName?: string;
 }
 
-const CreateUpdateVaultModal: React.FC<VaultFormProps> = ({ isOpen, setIsOpen, existedVaultName }) => {
+const CreateUpdateVaultModal: React.FC<VaultFormProps> = ({
+  isOpen,
+  setIsOpen,
+  isForceCreateVaultMode,
+  existedVaultName,
+}) => {
   const isCreationFlow = !existedVaultName;
 
   const { vault, vaultKey, refresh } = useVault();
@@ -96,7 +102,14 @@ const CreateUpdateVaultModal: React.FC<VaultFormProps> = ({ isOpen, setIsOpen, e
         setIsOpen(isOpen);
         form.reset();
       }}>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent
+        className='sm:max-w-[425px]'
+        onInteractOutside={(e) => {
+          if (isForceCreateVaultMode) {
+            e.preventDefault();
+          }
+        }}
+        hideCloseButton={isForceCreateVaultMode}>
         <DialogHeader>
           <DialogTitle>{isCreationFlow ? 'Create' : 'Edit'} vault</DialogTitle>
           <DialogDescription>

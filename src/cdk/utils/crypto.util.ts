@@ -1,5 +1,7 @@
-import { AES, enc, SHA256 } from 'crypto-js';
+import { SHA256 } from 'crypto-js';
 import pbkdf2 from 'crypto-js/pbkdf2';
+
+import { dynamicEncryptor } from '@/cdk/utils/dynamic-encryptor.util';
 
 interface VaultWithVaultKey {
   vaultKey: string;
@@ -24,16 +26,15 @@ export const generateVaultKey = ({ email, hashedPassword, salt }: MetaDataForVau
 };
 
 export const decryptVault = ({ vaultKey, vault }: VaultWithVaultKey): string | null => {
-  const bytes = AES.decrypt(vault, vaultKey);
-  const decrypted = bytes.toString(enc.Utf8);
+  const decryptedVault = dynamicEncryptor.decrypt(vault, vaultKey);
 
   try {
-    return JSON.parse(decrypted);
+    return JSON.parse(decryptedVault);
   } catch (e) {
     return null;
   }
 };
 
 export const encryptVault = ({ vaultKey, vault }: VaultWithVaultKey): string => {
-  return AES.encrypt(JSON.stringify(vault), vaultKey).toString();
+  return dynamicEncryptor.encrypt(JSON.stringify(vault), vaultKey);
 };
