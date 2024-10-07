@@ -1,7 +1,7 @@
 'use client';
 
 import { AxiosError } from 'axios';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
@@ -38,9 +38,9 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const [isEditingFlow, setIsEditingFlow] = useState(false);
   const [selectedVaultItem, setSelectedVaultItem] = useState<VaultItem | null | undefined>();
-  const [selectedVaultName, setSelectedVaultName] = useState(Object.keys(vault)[0]);
+  const [selectedVaultName, setSelectedVaultName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(!Boolean(Object.keys(vault)[0]));
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const isCreationFlow = selectedVaultItem === null;
 
@@ -80,6 +80,10 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
       }),
     [vaultItems, searchQuery]
   );
+
+  useEffect(() => {
+    setIsCreateModalOpen(!Boolean(Object.keys(vault)[0]));
+  }, [vault]);
 
   function handleSubmit(): void {
     const vaultValues = form.getValues();

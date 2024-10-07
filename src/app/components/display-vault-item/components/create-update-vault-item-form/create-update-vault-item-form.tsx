@@ -1,10 +1,11 @@
 import { format } from 'date-fns';
 import { Earth, Lock, User } from 'lucide-react';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 import VaultCredentialsFormInput from '@/app/components/display-vault-item/components/create-update-vault-item-form/components/vault-credentials-form-input/vault-credentials-form-input';
 import VaultFormInput from '@/app/components/display-vault-item/components/create-update-vault-item-form/components/vault-form-input/vault-form-input';
+import GeneratePasswordModal from '@/app/components/display-vault-item/components/generate-password-modal/generate-password-modal';
 import { VaultFormData, VaultItem } from '@/cdk/types/vault.type';
 import FormInput from '@/components/shared/form-input/form-input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -24,12 +25,23 @@ const CreateUpdateVaultItemForm: React.FC<CreateUpdateVaultItemFormProps<VaultFo
   form,
   readOnly,
 }) => {
-  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isGeneratePasswordModalOpen, setIsGeneratePasswordModalOpen] = useState(false);
 
   function handlePasswordVisibilityChange(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
     e.preventDefault();
 
     setIsPasswordVisible((state) => !state);
+  }
+
+  function handlePasswordGenerateModalOpen(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+    e.preventDefault();
+
+    setIsGeneratePasswordModalOpen(true);
+  }
+
+  function handleSetGeneratedPassword(password: string): void {
+    form.setValue('password', password);
   }
 
   return (
@@ -48,7 +60,7 @@ const CreateUpdateVaultItemForm: React.FC<CreateUpdateVaultItemFormProps<VaultFo
         </CardHeader>
         <CardContent className='grid gap-4'>
           <div className='border-accent border rounded-md space-x-4'>
-            <div>
+            <div className='relative'>
               <VaultCredentialsFormInput<VaultFormData>
                 isCreationFlow={isCreationFlow}
                 form={form}
@@ -60,7 +72,6 @@ const CreateUpdateVaultItemForm: React.FC<CreateUpdateVaultItemFormProps<VaultFo
                 icon={<User className='mt-px h-5 w-5' />}
                 className='rounded-t-md rounded-tl-md'
               />
-
               <Separator />
               <VaultCredentialsFormInput<VaultFormData>
                 isCreationFlow={isCreationFlow}
@@ -75,6 +86,12 @@ const CreateUpdateVaultItemForm: React.FC<CreateUpdateVaultItemFormProps<VaultFo
                 isPasswordField
                 isPasswordVisible={isPasswordVisible}
                 onPasswordVisibilityChange={handlePasswordVisibilityChange}
+                onPasswordGenerateModalOpen={handlePasswordGenerateModalOpen}
+              />
+              <GeneratePasswordModal
+                isOpen={isGeneratePasswordModalOpen}
+                setIsOpen={setIsGeneratePasswordModalOpen}
+                onSetGeneratedPassword={handleSetGeneratedPassword}
               />
             </div>
           </div>

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { getVaultItemIcon } from '@/app/components/vault-items-list/utils/get-vault-item-icon';
 import { VaultItem } from '@/cdk/types/vault.type';
 import { cn } from '@/cdk/utils/cn.util';
+import { getPasswordStrengthShieldIcon } from '@/cdk/utils/password-strength-icon.util';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface VaultListProps {
@@ -26,7 +26,7 @@ const VaultItemsList: React.FC<VaultListProps> = ({ items, selectedVaultItem, se
             <div className='flex w-full flex-col gap-1'>
               <div className='flex items-center'>
                 <div className='flex items-center gap-2'>
-                  {getVaultItemIcon(item.password)}
+                  {getPasswordStrengthShieldIcon(item.password)}
                   <div className='font-semibold'>{item.name ? item.name : 'Untitled'}</div>
                 </div>
                 <div

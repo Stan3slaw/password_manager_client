@@ -1,8 +1,9 @@
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, SettingsIcon } from 'lucide-react';
 import React from 'react';
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 
 import { cn } from '@/cdk/utils/cn.util';
+import { getPasswordStrengthCircularIcon } from '@/cdk/utils/password-strength-icon.util';
 import CopyButton from '@/components/shared/copy-button/copy-button';
 import FormInput from '@/components/shared/form-input/form-input';
 import { Button } from '@/components/ui/button';
@@ -21,6 +22,7 @@ interface VaultCredentialsFormInputProps<T extends FieldValues> {
   isPasswordField?: boolean;
   isPasswordVisible?: boolean;
   onPasswordVisibilityChange?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onPasswordGenerateModalOpen?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 const VaultCredentialsFormInput = <T extends FieldValues>({
@@ -36,6 +38,7 @@ const VaultCredentialsFormInput = <T extends FieldValues>({
   isPasswordField,
   isPasswordVisible,
   onPasswordVisibilityChange,
+  onPasswordGenerateModalOpen,
 }: VaultCredentialsFormInputProps<T>): React.JSX.Element => {
   return (
     <div
@@ -57,19 +60,31 @@ const VaultCredentialsFormInput = <T extends FieldValues>({
           readOnly={readOnly}
         />
       </div>
-      {readOnly && valueToCopy && (
+      {isPasswordField && valueToCopy && (
         <>
-          {isPasswordField && (
-            <Button
-              onClick={onPasswordVisibilityChange}
-              variant='ghost'
-              size='icon'
-              className='group/copy group-hover/item:visible invisible h-10 w-10 relative z-10 text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50 [&_svg]:h-4 [&_svg]:w-4'>
-              {isPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
-            </Button>
-          )}
-          <CopyButton className='group/copy group-hover/item:visible invisible h-10 w-10' value={valueToCopy} />
+          <div className='group/copy group-hover/item:invisible visible self-center absolute right-5'>
+            <div>{getPasswordStrengthCircularIcon({ password: valueToCopy, showDescription: true })}</div>
+          </div>
+          <Button
+            onClick={onPasswordVisibilityChange}
+            variant='ghost'
+            size='icon'
+            className='group/copy group-hover/item:visible invisible h-10 w-10 relative z-10 text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50 [&_svg]:h-4 [&_svg]:w-4'>
+            {isPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
+          </Button>
         </>
+      )}
+      {!readOnly && isPasswordField && (
+        <Button
+          onClick={onPasswordGenerateModalOpen}
+          variant='ghost'
+          size='icon'
+          className='group/copy group-hover/item:visible invisible h-10 w-10 relative z-10 text-zinc-50 hover:bg-zinc-700 hover:text-zinc-50 [&_svg]:h-4 [&_svg]:w-4'>
+          <SettingsIcon />
+        </Button>
+      )}
+      {readOnly && valueToCopy && (
+        <CopyButton className='group/copy group-hover/item:visible invisible h-10 w-10' value={valueToCopy} />
       )}
     </div>
   );
