@@ -81,6 +81,14 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
     [vaultItems, searchQuery]
   );
 
+  const isDuplicatedPasswordInSelectedVault = useMemo(() => {
+    return Object.entries(vault).some(([_, vaultItems]) =>
+      vaultItems.some(
+        (vaultItem) => vaultItem.password === selectedVaultItem?.password && vaultItem.id !== selectedVaultItem?.id
+      )
+    );
+  }, [vault, selectedVaultItem]);
+
   useEffect(() => {
     setIsCreateModalOpen(!Boolean(Object.keys(vault)[0]));
   }, [vault]);
@@ -225,6 +233,7 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
               isEditingFlow={isEditingFlow}
               form={form}
               vaultItem={selectedVaultItem}
+              isDuplicatedPassword={isDuplicatedPasswordInSelectedVault}
               onEdit={handleEditVaultItem}
               onSubmit={handleSubmit}
               onCancel={handleCancelEditVaultItem}
