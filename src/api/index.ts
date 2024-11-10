@@ -1,5 +1,3 @@
-import { AxiosRequestConfig } from 'axios';
-
 import axiosInstance from '@/cdk/lib/axios-instance.lib';
 
 export const signUp = async (payload: {

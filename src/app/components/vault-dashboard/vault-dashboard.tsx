@@ -95,12 +95,17 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
 
   function handleSubmit(): void {
     const vaultValues = form.getValues();
+    const uniqueId = crypto.randomUUID();
+    const vaultValuesWithUniqueId = { ...vaultValues, id: uniqueId };
     let updatedVault;
 
     if (isCreationFlow) {
       updatedVault = {
         ...vault,
-        [selectedVaultName]: [...vaultItems, { ...vaultValues, createdAt: new Date(), updatedAt: new Date() }],
+        [selectedVaultName]: [
+          ...vaultItems,
+          { ...vaultValuesWithUniqueId, createdAt: new Date(), updatedAt: new Date() },
+        ],
       };
     } else {
       updatedVault = {
@@ -136,9 +141,7 @@ const VaultDashboard: React.FC<VaultDashboardProps> = ({
     setSelectedVaultItem(null);
     setIsEditingFlow(false);
 
-    const vaultId = crypto.randomUUID();
     form.reset();
-    form.setValue('id', vaultId);
   }
 
   function handleCancelEditVaultItem(): void {
